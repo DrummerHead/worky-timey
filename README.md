@@ -1,4 +1,4 @@
-# Workey Timey
+# Worky Timey
 
 Simple Ruby script for Time Tracking
 
