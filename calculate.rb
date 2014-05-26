@@ -22,7 +22,7 @@ def worked_mins(step, hours = false)
   finish_m = hours_to_mins(step[:finish])
   substract_m = hours_to_mins(step[:substract])
   worked_m = finish_m - start_m - substract_m
-  return hours ? worked_m / 60.0 : worked_m
+  return hours ? worked_m / 60.0 * step[:multiplier] : worked_m * step[:multiplier]
 end
 
 
@@ -32,7 +32,7 @@ end
   puts "\n\n#{date.to_s.gsub('d', '')}\n=========="
 
   data.each do |step|
-    puts step[:description].gsub(/ {8}/, '')
+    puts step[:description].gsub(/^ */, '')
     worked_time << worked_mins(step)
     puts "__#{worked_mins(step, true)} hours__"
   end
