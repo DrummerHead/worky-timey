@@ -1,9 +1,17 @@
+#!/usr/bin/env ruby
+
 require "./timesheet"
+
+
+# Capture console arguments
+#
+args = ARGF.argv
+
 
 # Define rate and currency kind
 #
 worked_time = []
-@rate = 60
+@rate = 70
 currency = 'USD'
 
 
@@ -26,15 +34,27 @@ def worked_mins(step, hours = false)
 end
 
 
-# Churn data, puts Markdown
+# Either output info as md or tsv for spreadsheet inputting
+# according to passed parameter
 #
-@timesheet.each do |date, data|
-  puts "\n\n#{date.to_s.gsub('d', '')}\n=========="
-
-  data.each do |step|
-    puts step[:description].gsub(/^ */, '')
-    worked_time << worked_mins(step)
-    puts "__#{worked_mins(step, true)} hours__"
+if args.include?("--spreadsheet")
+  @timesheet.each do |date, data|
+    print "#{date.to_s.gsub('d', '')}"
+    day_hours = []
+    data.each do |step|
+      worked_time << worked_mins(step)
+      day_hours << worked_mins(step)
+    end
+    print "\t#{day_hours.reduce(:+) / 60.0}\n"
+  end
+else
+  @timesheet.each do |date, data|
+    puts "\n\n#{date.to_s.gsub('d', '')}\n=========="
+    data.each do |step|
+      puts step[:description].gsub(/^ */, '')
+      worked_time << worked_mins(step)
+      puts "__#{worked_mins(step, true)} hours__"
+    end
   end
 end
 
